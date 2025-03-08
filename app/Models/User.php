@@ -64,4 +64,9 @@ class User extends Authenticatable
         return $this->morphMany(Transation::class, 'transationable');
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
 }

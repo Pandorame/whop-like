@@ -9,6 +9,7 @@ use App\Helpers\Enums\TransitionType;
 use App\Models\Admin;
 use App\Models\Deposit;
 use App\Models\Transation;
+use App\Models\User;
 use App\Models\Wallet;
 use App\Services\TransitionService;
 use DB;
@@ -48,7 +49,7 @@ class DepositResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $admin = Auth::guard('admin')->user();
-        return parent::getEloquentQuery()->when($admin->parent_id,fn($q) => $q->where('to_admin_id',$admin->id));
+        return parent::getEloquentQuery()->where('to_admin_id',$admin->id)->whereNotNull('user_id');
     }
 
 
@@ -133,24 +134,29 @@ class DepositResource extends Resource
                     ->button()->icon('heroicon-o-viewfinder-circle')->modalWidth('md'),
 
                     Tables\Actions\Action::make('Complete')->action(function(Deposit $record){
-                        $admin = Admin::where('id',$record->admin_id)->first();
-                        if (!$admin){
-                            Notification::make()->title('Wallet Not Found')->color('danger')->send();
+                        $user = User::where('id',$record->user_id)->with('wallet')->first();
+                        if (!$user){
+                            Notification::make()->title('User Not Found')->color('danger')->send();
+                            return;
+                        }
+                        if($record->toAdmin->wallet < $record->amount){
+                            Notification::make()->title('You fund is insufficient')->color('danger')->send();
                             return;
                         }
                         DB::beginTransaction();
                         try{
-                            $comissionFees =( $admin->commission_percentage / 100 ) *  $record->amount;
-                            $admin->increment('wallet',$record->amount + $comissionFees);
+                            $user->wallet->increment('wallet',$record->amount);
                             $record->status = DepositStatus::Completed;
                             $record->update();
 
                             $transition = new Transation();
-                            $transition->transationable_id = $admin->id;
-                            $transition->transationable_type = get_class($admin);
+                            $transition->transationable_id = $user->id;
+                            $transition->transationable_type = get_class($user);
                             $transition->amount = $record->amount;
                             $transition->type = TransitionType::CashIn;
                             $transition->save();
+
+                            $record->toAdmin->decrement('wallet',$record->amount);
 
                             DB::commit();
 
@@ -165,7 +171,7 @@ class DepositResource extends Resource
 
 
                     })->button()->icon('heroicon-o-check-circle')->outlined()->color('success')
-                        ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == \Illuminate\Support\Facades\Auth::user()->id),
+                        ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::user()->id),
 
                     Tables\Actions\Action::make('Cancelled')->action(function(Deposit $record){
                         $record->status = DepositStatus::Cancelled;

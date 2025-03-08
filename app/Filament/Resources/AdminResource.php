@@ -36,6 +36,8 @@ class AdminResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $user = Auth::guard('admin')->user();
+
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
@@ -55,11 +57,21 @@ class AdminResource extends Resource
                     ->required()
                     ->numeric()->label('Commission')
                     ->default(0.00),
+
+                Forms\Components\TextInput::make('wallet')
+                    ->required()->hidden(fn()  => !in_array('super_admin', $user->roles->pluck('name')->toArray()))
+                    ->numeric()
+                    ->default(0.00),
+
                 Forms\Components\CheckboxList::make('roles')
-                    ->relationship('roles', 'name')
-                    ->hidden(function(){
-                        return !in_array('super_admin',Auth::guard('admin')->user()->roles->pluck('name')->toArray());
+                    ->relationship('roles', 'name',modifyQueryUsing:function (Builder $query) use($user) {
+                        if (!in_array('super_admin', $user->roles->pluck('name')->toArray())) {
+                            $query->whereNotIn('name', ['super_admin', 'DTR', 'panel_user']);
+                        }
                     })
+                    // ->hidden(function(){
+                    //     return !in_array('super_admin',Auth::guard('admin')->user()->roles->pluck('name')->toArray());
+                    // })
                     ->searchable(),
             ]);
     }

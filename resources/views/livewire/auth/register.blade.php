@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
+use App\Models\Wallet;
 
 new #[Layout('components.layouts.auth')] class extends Component {
     public string $name = '';
@@ -28,6 +29,11 @@ new #[Layout('components.layouts.auth')] class extends Component {
         $validated['password'] = Hash::make($validated['password']);
 
         event(new Registered(($user = User::create($validated))));
+
+        $wallet = new Wallet();
+        $wallet->wallet_no = uniqid();
+        $wallet->user_id = $user->id;
+        $wallet->save();
 
         Auth::login($user);
 
