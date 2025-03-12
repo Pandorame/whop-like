@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('payment_id');
             $table->integer('payment_account_id');
             $table->decimal('amount',15,2);
+            $table->decimal('points',15,2)->default(0);
             $table->text('slip');
             $table->string('status')->default(DepositStatus::Processing);
             $table->timestamps();

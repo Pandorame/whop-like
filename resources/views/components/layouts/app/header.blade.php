@@ -17,6 +17,18 @@
                 </flux:navbar.item>
             </flux:navbar>
 
+            <flux:navbar class="-mb-px max-lg:hidden">
+                <flux:navbar.item icon="wallet" :href="route('deposit')" :current="request()->routeIs('deposit')" wire:navigate>
+                    {{ __('Deposit') }}
+                </flux:navbar.item>
+            </flux:navbar>
+
+            <flux:navbar class="-mb-px max-lg:hidden">
+                <flux:navbar.item icon="histories" :href="route('histoires')" :current="request()->routeIs('histoires')" wire:navigate>
+                    {{ __('Histories') }}
+                </flux:navbar.item>
+            </flux:navbar>
+
             <flux:spacer />
 
             <flux:navbar class="mr-1.5 space-x-0.5 py-0!">

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
@@ -26,8 +27,9 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
 
         FilamentView::registerRenderHook(
-            PanelsRenderHook::SIDEBAR_NAV_START,
-            fn (): View => view('components.wallet'),
+            PanelsRenderHook::SIDEBAR_FOOTER,
+            // fn (): View => view('components.wallet'),
+            fn (): string => Blade::render('@livewire(\'admin-wallet\')'),
         );
     }
 }

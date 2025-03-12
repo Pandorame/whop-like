@@ -41,4 +41,17 @@ class Deposit extends Model
     {
         return  $this->belongsTo(PaymentAccount::class);
     }
+
+    protected static function booted()
+    {
+        self::created(function(Deposit $deposit){
+            if(!$deposit->user_id){
+                $deposit->points = $deposit->amount * 5500;
+                $deposit->update();
+            }else{
+                $deposit->points = $deposit->amount;
+                $deposit->update();
+            }
+        });
+    }
 }

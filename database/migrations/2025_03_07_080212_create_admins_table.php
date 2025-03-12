@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->decimal('commission_percentage', 5, 2)->default(0);
             $table->decimal('wallet',18,2)->default(0.00);
+            $table->decimal('receive_wallet',18,2)->default(0.00);
             $table->rememberToken();
             $table->timestamps();
         });

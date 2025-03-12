@@ -36,10 +36,10 @@ class MyDepositReosourceResource extends Resource
     public static function getPluralModelLabel(): string
     {
         $user = Auth::guard('admin')->user();
-        return $user->level == null ? 'Distributor Deposits' :( $user->level == "DTR" ?  'Agent and Your Deposits' : 'Deposits');
+        return $user->level == null ? 'Distributor Deposits' :( $user->level == "DTR" ?  'Agent Deposits' : 'Deposits');
     }
 
-    protected static ?string $navigationGroup = 'Transaction Management';
+    protected static ?string $navigationGroup = 'Deposit Management';
 
     public static function canEdit(Model $record): bool
     {
@@ -53,12 +53,13 @@ class MyDepositReosourceResource extends Resource
         if(in_array('super_admin',$admin->roles->pluck('name')->toArray())){
             return parent::getEloquentQuery()->where('to_admin_id',$admin->id)->whereNull('user_id');
         }
-        // return parent::getEloquentQuery()->where('admin_id',$admin->id)->orWhere('to_admin_id',$admin->id); //->orWhere('admin_id',$admin->id)
+
         return parent::getEloquentQuery()
-                ->where(function ($query) use ($admin) {
-                    $query->where('admin_id', $admin->id)->whereNull('user_id');
-                })
-                ->orWhere('to_admin_id', $admin->id);
+                // ->where(function ($query) use ($admin) {
+                //     $query->where('admin_id', $admin->id)->whereNull('user_id');
+                // })
+                ->orWhere('to_admin_id', $admin->id)
+                ;
     }
 
     public static function form(Form $form): Form
@@ -100,19 +101,23 @@ class MyDepositReosourceResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('admin.name')
                 ->label('From Agent')
-                ->description(fn(Deposit $deposit) => $deposit->admin->email)
+                ->description(fn(Deposit $deposit) => $deposit->admin?->email)
                 ->sortable(),
 
                 Tables\Columns\TextColumn::make('toAdmin.name')
                 ->label('To Agent')
-                ->description(fn(Deposit $deposit) => $deposit->toAdmin->email)
+                ->description(fn(Deposit $deposit) => $deposit->toAdmin?->email)
                 ->sortable(),
 
                 Tables\Columns\TextColumn::make('payment.name')
-                    ->description(fn(Deposit $deposit) => $deposit->paymentAccount->name)
+                    ->description(fn(Deposit $deposit) => $deposit->paymentAccount?->name)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('amount')
+                    ->numeric()->size('md')->fontFamily('mono')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('points')
                     ->numeric()->size('md')->fontFamily('mono')
                     ->sortable(),
 
@@ -150,24 +155,25 @@ class MyDepositReosourceResource extends Resource
                         return;
                     }
 
-                    if($record->toAdmin->wallet < $record->amount){
+                    if($record->toAdmin->wallet < $record->amount * 5500){
                         Notification::make()->title('You fund is insufficient')->danger()->send();
                         return;
                     }
                     DB::beginTransaction();
                     try{
 
-                        $comissionFees =( $admin->commission_percentage / 100 ) *  $record->amount;
-                        $admin->increment('wallet',$record->amount + $comissionFees);
+                        $comissionFees = ( $admin->commission_percentage / 100 ) *  $record->amount * 5500;
+                        $totalPoints = $record->amount * 5500 + $comissionFees;
+                        $admin->increment('wallet',$totalPoints);
                         $record->status = DepositStatus::Completed;
                         $record->update();
 
-                        $record->toAdmin->decrement('wallet',$record->amount);
+                        $record->toAdmin->decrement('wallet',$totalPoints);
 
                         $transition = new Transation();
                         $transition->transationable_id = $admin->id;
                         $transition->transationable_type = get_class($admin);
-                        $transition->amount = $record->amount;
+                        $transition->amount = $record->amount * 5500;
                         $transition->type = TransitionType::CashIn;
                         $transition->save();
 
@@ -189,7 +195,9 @@ class MyDepositReosourceResource extends Resource
                     }
 
                 })->button()->icon('heroicon-o-check-circle')->outlined()->color('success')
-                    ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::guard('admin')->user()->id),
+                    ->extraAttributes(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::guard('admin')->id() ? array('class' =>  '') : array('class' => 'hidden'))
+                     //->disabled(fn(Deposit $deposit)=> $deposit->to_admin_id != Auth::guard('admin')->id()) //$deposit->status != DepositStatus::Processing&&  $deposit->to_admin_id != Auth::guard('admin')->id()
+                    ,
 
                 Tables\Actions\Action::make('Cancelled')->action(function(Deposit $record){
                     $record->status = DepositStatus::Cancelled;
@@ -203,7 +211,10 @@ class MyDepositReosourceResource extends Resource
                     $transition->save();
 
                     Notification::make()->title('Cancelled Deposit Completed')->danger()->send();
-                })->button()->icon('heroicon-o-x-circle')->outlined()->color('danger')->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::guard('admin')->user()->id),
+                })->button()->icon('heroicon-o-x-circle')->outlined()->color('danger')
+                ->extraAttributes(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::guard('admin')->id() ? array('class' =>  '') : array('class' => 'hidden'))
+                    // ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::guard('admin')->id())
+                    ,
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

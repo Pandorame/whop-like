@@ -33,7 +33,7 @@ class DepositResource extends Resource
 
     protected static ?string $modelLabel = 'User Deposits';
 
-    protected static ?string $navigationGroup = 'Transaction Management';
+    protected static ?string $navigationGroup = 'Deposit Management';
 
 
     public static function canCreate(): bool
@@ -51,7 +51,6 @@ class DepositResource extends Resource
         $admin = Auth::guard('admin')->user();
         return parent::getEloquentQuery()->where('to_admin_id',$admin->id)->whereNotNull('user_id');
     }
-
 
 
     public static function form(Form $form): Form
@@ -87,12 +86,12 @@ class DepositResource extends Resource
             ->defaultSort('id','desc')
             ->columns([
 
-                Tables\Columns\TextColumn::make('admin.name')
+                Tables\Columns\TextColumn::make('toAdmin.name')
                     ->label('Agent')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('user.name')
-                    ->numeric()->searchable()
+                    ->numeric()->searchable()->description(fn(Deposit $deposit) => $deposit->user->email)
                     ->sortable(),
                 // Tables\Columns\TextColumn::make('currency.type')
                 //     ->description(fn(Deposit $deposit) => $deposit->currency->country->name)
@@ -135,6 +134,7 @@ class DepositResource extends Resource
 
                     Tables\Actions\Action::make('Complete')->action(function(Deposit $record){
                         $user = User::where('id',$record->user_id)->with('wallet')->first();
+
                         if (!$user){
                             Notification::make()->title('User Not Found')->color('danger')->send();
                             return;
@@ -145,22 +145,31 @@ class DepositResource extends Resource
                         }
                         DB::beginTransaction();
                         try{
-                            $user->wallet->increment('wallet',$record->amount);
+                            $totalPoints = $record->amount;
+
+                            $user->wallet->increment('amount',$totalPoints);
                             $record->status = DepositStatus::Completed;
                             $record->update();
 
                             $transition = new Transation();
                             $transition->transationable_id = $user->id;
                             $transition->transationable_type = get_class($user);
-                            $transition->amount = $record->amount;
+                            $transition->amount = $totalPoints;
                             $transition->type = TransitionType::CashIn;
                             $transition->save();
 
-                            $record->toAdmin->decrement('wallet',$record->amount);
+                            $record->toAdmin->decrement('wallet',$totalPoints);
+
+                            $transition = new Transation();
+                            $transition->transationable_id = $record->toAdmin->id;
+                            $transition->transationable_type = get_class($record->toAdmin);
+                            $transition->amount = $totalPoints;
+                            $transition->type = TransitionType::CashOut;
+                            $transition->save();
 
                             DB::commit();
 
-                            Notification::make()->title('Delivered Deposit Completed')->color('success')->send();
+                            Notification::make()->title('Delivered Deposit Completed')->body("Added $totalPoints !")->color('success')->send();
 
                         }catch(Exception $e){
 
@@ -171,15 +180,17 @@ class DepositResource extends Resource
 
 
                     })->button()->icon('heroicon-o-check-circle')->outlined()->color('success')
-                        ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::user()->id),
+                        // ->visible(fn(Deposit $deposit) => dd($deposit->to_admin_id))
+                        ->visible(fn(Deposit $deposit)=> $deposit->status == DepositStatus::Processing &&  $deposit->to_admin_id == Auth::user()->id)
+                        ,
 
                     Tables\Actions\Action::make('Cancelled')->action(function(Deposit $record){
                         $record->status = DepositStatus::Cancelled;
                         $record->update();
 
                         $transition = new Transation();
-                        $transition->transationable_id = $record->admin_id;
-                        $transition->transationable_type = get_class($record->admin);
+                        $transition->transationable_id = $record->user_id;
+                        $transition->transationable_type = get_class($record->user);
                         $transition->amount = $record->amount;
                         $transition->type = TransitionType::CashIn;
                         $transition->save();

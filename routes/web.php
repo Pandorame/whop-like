@@ -1,5 +1,8 @@
 <?php
 
+use App\Livewire\Deposit;
+use App\Livewire\DepositHistory;
+use App\Livewire\History;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
@@ -17,6 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::get('deposit',Deposit::class)->name('deposit');
+    Route::get('histories',History::class)->name('histoires');
+    Route::get('deposit/histories',DepositHistory::class)->name('deposit.history');
 });
 
 require __DIR__.'/auth.php';
