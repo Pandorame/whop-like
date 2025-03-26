@@ -9,7 +9,6 @@ use App\Helpers\Enums\WithdrawStatus;
 use App\Models\Admin;
 use App\Models\Transation;
 use App\Models\Withdraw;
-use DB;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,6 +22,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class WithdrawResource extends Resource
 {

@@ -11,7 +11,6 @@ use App\Models\Deposit;
 use App\Models\MyDepositReosource;
 use App\Models\Payment;
 use App\Models\Transation;
-use DB;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MyDepositReosourceResource extends Resource
 {

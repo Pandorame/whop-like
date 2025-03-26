@@ -17,16 +17,35 @@
                 </flux:navlist.group>
             </flux:navlist>
 
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('deposit')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('deposit')" :current="request()->routeIs('deposit')" wire:navigate>{{ __('deposit') }}</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('histoires')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('histoires')" :current="request()->routeIs('histoires')" wire:navigate>{{ __('histoires') }}</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('game.lobby')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('game.lobby')" :current="request()->routeIs('game.lobby')" wire:navigate>{{ __('game.lobby') }}</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
+
+
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
+                {{-- <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
 
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
                 {{ __('Documentation') }}
-                </flux:navlist.item>
+                </flux:navlist.item> --}}
             </flux:navlist>
 
             <!-- Desktop User Menu -->

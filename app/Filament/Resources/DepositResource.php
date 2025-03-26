@@ -12,7 +12,6 @@ use App\Models\Transation;
 use App\Models\User;
 use App\Models\Wallet;
 use App\Services\TransitionService;
-use DB;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,6 +23,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DepositResource extends Resource
 {
@@ -35,6 +35,8 @@ class DepositResource extends Resource
 
     protected static ?string $navigationGroup = 'Deposit Management';
 
+    // Add this property to the class
+    protected static ?string $policyName = 'App\Policies\DepositPolicy';
 
     public static function canCreate(): bool
     {

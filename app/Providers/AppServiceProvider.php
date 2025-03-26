@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
 
         FilamentView::registerRenderHook(
-            PanelsRenderHook::SIDEBAR_FOOTER,
+            PanelsRenderHook::USER_MENU_PROFILE_AFTER, 
             // fn (): View => view('components.wallet'),
             fn (): string => Blade::render('@livewire(\'admin-wallet\')'),
         );

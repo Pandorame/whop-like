@@ -6,7 +6,6 @@ use App\Filament\Resources\SubAgentWithdrawResource\Pages;
 use App\Filament\Resources\SubAgentWithdrawResource\RelationManagers;
 use App\Models\SubAgentWithdraw;
 use App\Models\Withdraw;
-use Auth;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class SubAgentWithdrawResource extends Resource
 {
@@ -24,6 +24,12 @@ class SubAgentWithdrawResource extends Resource
     protected static ?string $modelLabel = 'SubAgentWithdraw';
 
     protected static ?string $navigationGroup = 'Withdraw Management';
+
+    public static function getPluralModelLabel(): string
+    {
+        $user = Auth::guard('admin')->user();
+        return $user->level == null ? 'Distributor Withdraws' :( $user->level == "DTR" ?  'Agent Withdraws' : 'Withdraws');
+    }
 
 
     public static function getEloquentQuery(): Builder

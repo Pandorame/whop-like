@@ -55,7 +55,7 @@ class PaymentPolicy
      */
     public function deleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ DeleteAny }}');
+        return $admin->can('delete_any_payment');
     }
 
     /**
@@ -63,7 +63,7 @@ class PaymentPolicy
      */
     public function forceDelete(Admin $admin, Payment $payment): bool
     {
-        return $admin->can('{{ ForceDelete }}');
+        return $admin->can('force_delete_payment');
     }
 
     /**
@@ -71,7 +71,7 @@ class PaymentPolicy
      */
     public function forceDeleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ ForceDeleteAny }}');
+        return $admin->can('force_delete_any_payment');
     }
 
     /**
@@ -79,7 +79,7 @@ class PaymentPolicy
      */
     public function restore(Admin $admin, Payment $payment): bool
     {
-        return $admin->can('{{ Restore }}');
+        return $admin->can('restore_payment');
     }
 
     /**
@@ -87,7 +87,7 @@ class PaymentPolicy
      */
     public function restoreAny(Admin $admin): bool
     {
-        return $admin->can('{{ RestoreAny }}');
+        return $admin->can('restore_any_payment');
     }
 
     /**
@@ -95,7 +95,7 @@ class PaymentPolicy
      */
     public function replicate(Admin $admin, Payment $payment): bool
     {
-        return $admin->can('{{ Replicate }}');
+        return $admin->can('replicate_payment');
     }
 
     /**
@@ -103,6 +103,6 @@ class PaymentPolicy
      */
     public function reorder(Admin $admin): bool
     {
-        return $admin->can('{{ Reorder }}');
+        return $admin->can('reorder_payment');
     }
 }

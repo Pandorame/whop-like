@@ -28,12 +28,12 @@
                     </a>
 
                     <!-- Withdrawal History -->
-                    <a href="" class="group">
+                    <a href="{{ route('withdraw.history') }}" class="group">
                         <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" transform="rotate(45 12 12)" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
                                 <div class="ml-4">
@@ -49,18 +49,19 @@
                         </div>
                     </a>
 
-                    <!-- Transfer History -->
-                    <a href="" class="group">
+                    <!-- Game History -->
+                    {{-- <a href="{{ route('game.history') }}" class="group">
                         <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Transfer History</h3>
-                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all transfer transactions</p>
+                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Game History</h3>
+                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View your game rounds and results</p>
                                 </div>
                                 <div class="ml-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
@@ -69,10 +70,12 @@
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </a> --}}
+
+
 
                     <!-- Bet History -->
-                    <a href="" class="group">
+                    <a href="{{ route('withdraw.history') }}" class="group">
                         <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">
@@ -93,30 +96,8 @@
                         </div>
                     </a>
 
-                    <!-- Commission History -->
-                    <a href="" class="group">
-                        <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Commission History</h3>
-                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all commission earnings</p>
-                                </div>
-                                <div class="ml-auto">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
                     <!-- All Transactions -->
-                    <a href="" class="group">
+                    <a href="{{ route('all.transactions') }}" class="group">
                         <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">

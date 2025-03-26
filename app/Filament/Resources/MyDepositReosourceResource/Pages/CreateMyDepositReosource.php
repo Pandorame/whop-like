@@ -18,4 +18,9 @@ class CreateMyDepositReosource extends CreateRecord
         $data['to_admin_id'] =$admin->parent_id;
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -55,7 +55,7 @@ class UserPolicy
      */
     public function deleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ DeleteAny }}');
+        return $admin->can('delete_any_user');
     }
 
     /**
@@ -63,7 +63,7 @@ class UserPolicy
      */
     public function forceDelete(Admin $admin, User $user): bool
     {
-        return $admin->can('{{ ForceDelete }}');
+        return $admin->can('force_delete_user');
     }
 
     /**
@@ -71,7 +71,7 @@ class UserPolicy
      */
     public function forceDeleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ ForceDeleteAny }}');
+        return $admin->can('force_delete_any_user');
     }
 
     /**
@@ -79,7 +79,7 @@ class UserPolicy
      */
     public function restore(Admin $admin, User $user): bool
     {
-        return $admin->can('{{ Restore }}');
+        return $admin->can('restore_user');
     }
 
     /**
@@ -87,7 +87,7 @@ class UserPolicy
      */
     public function restoreAny(Admin $admin): bool
     {
-        return $admin->can('{{ RestoreAny }}');
+        return $admin->can('restore_any_user');
     }
 
     /**
@@ -95,7 +95,7 @@ class UserPolicy
      */
     public function replicate(Admin $admin, User $user): bool
     {
-        return $admin->can('{{ Replicate }}');
+        return $admin->can('replicate_user');
     }
 
     /**
@@ -103,6 +103,6 @@ class UserPolicy
      */
     public function reorder(Admin $admin): bool
     {
-        return $admin->can('{{ Reorder }}');
+        return $admin->can('reorder_user');
     }
 }

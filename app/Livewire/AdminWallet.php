@@ -17,6 +17,7 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminWallet extends Component implements HasForms, HasActions
 {
@@ -110,6 +111,78 @@ class AdminWallet extends Component implements HasForms, HasActions
 
                 Notification::make()->title('Exchange Successfully!')->success()->send();
 
+            });
+    }
+
+    // New transfer action for DTR to agent
+    public function transferAction(): Action
+    {
+        return Action::make('transfer')
+            ->icon('heroicon-m-paper-airplane')->iconButton()
+            ->form([
+                Select::make('agent_id')
+                    ->label('Select Agent')
+                    ->options(fn() => Admin::where('level', 'AGENT')->pluck('name', 'id'))
+                    ->searchable()
+                    ->required(),
+                TextInput::make('amount')
+                    ->label('Amount to Transfer')
+                    ->numeric()
+                    ->required()
+                    ->rules('max:' . $this->admin->wallet),
+            ])
+            ->action(function (array $arguments, $data) {
+                $amount = $data['amount'];
+                $agentId = $data['agent_id'];
+                
+                // Validate amount
+                if ($amount > $this->admin->wallet || $amount < 10) {
+                    Notification::make()->title('Insufficient funds or minimum transfer amount not met')->danger()->send();
+                    return;
+                }
+                
+                // Get the agent
+                $agent = Admin::find($agentId);
+                if (!$agent) {
+                    Notification::make()->title('Agent not found')->danger()->send();
+                    return;
+                }
+                
+                // Begin transaction
+                DB::beginTransaction();
+                
+                try {
+                    // Deduct from admin wallet
+                    $this->admin->decrement('wallet', $amount);
+                    
+                    // Add to agent receive_wallet
+                    $agent->increment('receive_wallet', $amount);
+                    
+                    // Create transaction record for admin (sender)
+                    $adminTransition = new Transation();
+                    $adminTransition->transationable_id = $this->admin->id;
+                    $adminTransition->transationable_type = get_class($this->admin);
+                    $adminTransition->amount = $amount;
+                    $adminTransition->type = TransitionType::CashOut;
+                    // $adminTransition->description = "Transfer to agent: {$agent->name} (ID: {$agent->id})";
+                    $adminTransition->save();
+                    
+                    // Create transaction record for agent (receiver)
+                    $agentTransition = new Transation();
+                    $agentTransition->transationable_id = $agent->id;
+                    $agentTransition->transationable_type = get_class($agent);
+                    $agentTransition->amount = $amount;
+                    $agentTransition->type = TransitionType::CashIn;
+                    // $agentTransition->description = "Received from admin: {$this->admin->name} (ID: {$this->admin->id})";
+                    $agentTransition->save();
+                    
+                    DB::commit();
+                    
+                    Notification::make()->title('Transfer Successful!')->success()->send();
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    Notification::make()->title('Transfer Failed: ' . $e->getMessage())->danger()->send();
+                }
             });
     }
 

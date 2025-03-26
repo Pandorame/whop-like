@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Helpers\Enums\DepositStatus;
 use App\Models\Admin;
 use App\Models\Agent as AgentModel;
 use App\Models\Deposit as DepositModel;
@@ -91,7 +92,7 @@ class Deposit extends Component
                 'payment_account_id' => $this->selectedPaymentAccount,
                 'amount' => $this->amount,
                 'slip' => $slipPath,
-                'status' => 'completed',
+                'status' => DepositStatus::Processing,
             ]);
 
             DB::commit();

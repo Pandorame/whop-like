@@ -5,15 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SubAgentDepositResource\Pages;
 use App\Filament\Resources\SubAgentDepositResource\RelationManagers;
 use App\Models\Deposit;
-use App\Models\SubAgentDeposit;
-use Auth;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class SubAgentDepositResource extends Resource
 {

@@ -15,7 +15,7 @@ class DepositPolicy
      */
     public function viewAny(Admin $admin): bool
     {
-        return $admin->can('view_any_my::deposit::reosource');
+        return $admin->can('view_any_sub::agent::deposit');
     }
 
     /**
@@ -23,7 +23,7 @@ class DepositPolicy
      */
     public function view(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('view_my::deposit::reosource');
+        return $admin->can('view_sub::agent::deposit');
     }
 
     /**
@@ -31,7 +31,7 @@ class DepositPolicy
      */
     public function create(Admin $admin): bool
     {
-        return $admin->can('create_my::deposit::reosource');
+        return $admin->can('create_sub::agent::deposit');
     }
 
     /**
@@ -39,7 +39,7 @@ class DepositPolicy
      */
     public function update(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('update_my::deposit::reosource');
+        return $admin->can('update_sub::agent::deposit');
     }
 
     /**
@@ -47,7 +47,7 @@ class DepositPolicy
      */
     public function delete(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('delete_my::deposit::reosource');
+        return $admin->can('delete_sub::agent::deposit');
     }
 
     /**
@@ -55,7 +55,7 @@ class DepositPolicy
      */
     public function deleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ DeleteAny }}');
+        return $admin->can('delete_any_sub::agent::deposit');
     }
 
     /**
@@ -63,7 +63,7 @@ class DepositPolicy
      */
     public function forceDelete(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('{{ ForceDelete }}');
+        return $admin->can('force_delete_sub::agent::deposit');
     }
 
     /**
@@ -71,7 +71,7 @@ class DepositPolicy
      */
     public function forceDeleteAny(Admin $admin): bool
     {
-        return $admin->can('{{ ForceDeleteAny }}');
+        return $admin->can('force_delete_any_sub::agent::deposit');
     }
 
     /**
@@ -79,7 +79,7 @@ class DepositPolicy
      */
     public function restore(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('{{ Restore }}');
+        return $admin->can('restore_sub::agent::deposit');
     }
 
     /**
@@ -87,7 +87,7 @@ class DepositPolicy
      */
     public function restoreAny(Admin $admin): bool
     {
-        return $admin->can('{{ RestoreAny }}');
+        return $admin->can('restore_any_sub::agent::deposit');
     }
 
     /**
@@ -95,7 +95,7 @@ class DepositPolicy
      */
     public function replicate(Admin $admin, Deposit $deposit): bool
     {
-        return $admin->can('{{ Replicate }}');
+        return $admin->can('replicate_sub::agent::deposit');
     }
 
     /**
@@ -103,6 +103,6 @@ class DepositPolicy
      */
     public function reorder(Admin $admin): bool
     {
-        return $admin->can('{{ Reorder }}');
+        return $admin->can('reorder_sub::agent::deposit');
     }
 }
