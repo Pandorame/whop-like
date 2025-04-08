@@ -75,7 +75,7 @@
 
 
                     <!-- Bet History -->
-                    <a href="{{ route('withdraw.history') }}" class="group">
+                    <a href="{{ route('game.history') }}" class="group">
                         <div class="border border-gray-200 rounded-lg p-5 transition-all duration-200 hover:shadow-md hover:border-slate-400 group-hover:bg-slate-50">
                             <div class="flex items-center">
                                 <div class="flex-shrink-0 bg-slate-100 p-3 rounded-full group-hover:bg-slate-200">
