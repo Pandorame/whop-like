@@ -394,12 +394,33 @@ class GameTable extends Component
 
             foreach ($winners as $winner) {
                 $user = $winner->player->user;
-                $user->wallet->increment('amount', $winner->amount);
+                
+                // Check if the player has two cards with the same value (pair)
+                $card1Value = substr($winner->card_1, 0, -1); // Remove suit
+                $card2Value = substr($winner->card_2, 0, -1); // Remove suit
+                
+                // Convert face cards to their numeric value for comparison
+                if (in_array($card1Value, ['J', 'Q', 'K'])) {
+                    $card1Value = '10';
+                }
+                if (in_array($card2Value, ['J', 'Q', 'K'])) {
+                    $card2Value = '10';
+                }
+                
+                $hasPair = $card1Value === $card2Value;
+                
+                // For a pair: total payout is 3x the bet (original bet + 2x winnings)
+                // For normal win: total payout is 2x the bet (original bet + 1x winnings)
+                $winMultiplier = $hasPair ? 3 : 2;
+                $winAmount = $winner->amount * $winMultiplier;
+                
+                // Add the winnings to the user's wallet
+                $user->wallet->increment('amount', $winAmount);
 
                 // Record the win in the player round
                 $winner->update([
                     'status' => 'won',
-                    'win_amount' => $winner->amount * 2
+                    'win_amount' => $winAmount
                 ]);
             }
             
@@ -418,6 +439,20 @@ class GameTable extends Component
             // If no winners, host gets the pot
             $hostUser = $hostPlayer->user;
             // $hostUser->wallet->increment('amount', $hostUser->amount);
+
+             // Check if the player has two cards with the same value (pair)
+             $card1Value = substr($hostUser->card_1, 0, -1); // Remove suit
+             $card2Value = substr($hostUser->card_2, 0, -1); // Remove suit
+             
+             // Convert face cards to their numeric value for comparison
+             if (in_array($card1Value, ['J', 'Q', 'K'])) {
+                 $card1Value = '10';
+             }
+             if (in_array($card2Value, ['J', 'Q', 'K'])) {
+                 $card2Value = '10';
+             }
+             
+            $hasPair = $card1Value === $card2Value;
             
             // Record the win for the host
             $hostPlayerRound->update([
@@ -428,9 +463,19 @@ class GameTable extends Component
             // Mark all other players as losers
             foreach ($this->playerCards as $playerCard) {
                 if ($playerCard->player_id != $hostPlayer->id) {
-                    $playerCard->update([
-                        'status' => 'lost',
-                    ]);
+                    if($hasPair){
+                        $playerCard->player->user->wallet->decrement('amount', $playerCard->amount);
+
+                        $playerCard->update([
+                            'status' => 'lose',
+                            'amount' => $playerCard * 2
+                        ]);
+                    }else{
+                        $playerCard->update([
+                            'status' => 'lost',
+                        ]);
+                    }
+                   
                 }
             }
             
