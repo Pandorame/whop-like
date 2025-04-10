@@ -128,7 +128,7 @@
                             </div>
                             <span class="font-medium" x-text="winner.name"></span>
                         </div>
-                        <span class="font-bold text-green-600" x-text="'+' + winner.amount.toLocaleString() + ' Kyats'"></span>
+                        <span class="font-bold text-green-600" x-text="'+' + winner.amount.toLocaleString() + ' PT'"></span>
                     </div>
                 </template>
             </div>
@@ -140,7 +140,9 @@
     </div>
 
     <!-- Live Stream Section -->
+   
     <div class="my-6 bg-white shadow-lg rounded-lg overflow-hidden">
+        @if(!$isHost)
         <div class="bg-gradient-to-r from-slate-700 to-slate-900 px-6 py-4">
             <h2 class="text-xl font-bold text-white">Live Dealer</h2>
         </div>
@@ -153,11 +155,17 @@
                 class="w-full h-96"
             ></iframe>
         </div>
+        @endif
+
         <!-- Add this after the game controls section -->
         @if ($isHost)
             <div class="mt-6 bg-white shadow-lg rounded-lg overflow-hidden">
-                <div class="bg-gradient-to-r from-slate-700 to-slate-900 px-6 py-4">
+                <div class="bg-gradient-to-r flex justify-between items-center  from-slate-700 to-slate-900 px-6 py-4">
                     <h2 class="text-xl font-bold text-white">Host Controls</h2>
+                    <div class="flex flex-col items-end">
+                        <p class="text-slate-300 text-sm">Total Profit: {{ number_format($this->totalProfit ?? 0) }} PT</p>
+                        <p class="text-slate-300 text-sm">Commission (1%): {{ number_format(($this->totalProfit ?? 0) * 0.01) }} PT</p>
+                    </div>
                 </div>
                 <div class="p-6">
                     <div class="mb-6">
@@ -251,12 +259,40 @@
                             Determine Winner
                         </button>
 
+                        <!-- Add this near other modals in your template -->
+                        <div x-data="{ showEndGameModal: false }">
+                            <!-- End Game Button (in host controls section) -->
+                            <button @click="showEndGameModal = true" 
+                                    class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
+                                End Game
+                            </button>
+
+                            <!-- Confirmation Modal -->
+                            <div x-show="showEndGameModal" x-cloak class="fixed inset-0 bg-black/90 bg-opacity-50 flex items-center justify-center z-50">
+                                <div class="bg-white rounded-lg p-6 max-w-md w-full">
+                                    <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm End Game</h3>
+                                    <p class="text-sm text-gray-500 mb-6">
+                                        Are you sure you want to end this game? 
+                                        <span class="font-semibold">1% commission ({{ number_format($this->totalProfit * 0.01) }} PT)</span> will be deducted from the total profit.
+                                    </p>
+                                    <div class="flex justify-end space-x-3">
+                                        <button @click="showEndGameModal = false" type="button" class="px-4  py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                            Cancel
+                                        </button>
+                                        <button wire:click="endGame" @click="showEndGameModal = false" type="button" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                                            Confirm End
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
         @endif
     </div>
-
+    
     <div class="bg-white shadow-lg rounded-lg overflow-hidden">
         <!-- Game Header -->
         <div class="bg-gradient-to-r from-slate-700 to-slate-900 px-6 py-4 flex justify-between items-center">
@@ -304,7 +340,7 @@
                             </div>
                             @if ($playerRound && $playerRound->amount)
                                 <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                                    Bet: {{ number_format($playerRound->amount) }} Kyats
+                                    Bet: {{ number_format($playerRound->amount) }} PT
                                 </span>
                             @else
                                 <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
@@ -372,54 +408,6 @@
                             </template>
 
 
-                            {{-- //|| $showAllCards && $isCurrentUser --}}
-                            {{-- @if ($playerRound)
-                                <div class="flex justify-center space-x-2 mb-4">
-                                    @foreach ([$playerRound->card_1, $playerRound->card_2] as $card)
-                                        <div
-                                            class="w-16 h-24 bg-white rounded-lg shadow-md border border-gray-200 flex items-center justify-center relative overflow-hidden">
-                                            @php
-                                                $suit = substr($card, -1);
-                                                $value = substr($card, 0, strlen($card) - 1);
-                                                $color = in_array($suit, ['H', 'D'])
-                                                    ? 'text-red-600'
-                                                    : 'text-slate-800';
-                                                $suitSymbol =
-                                                    [
-                                                        'H' => '♥',
-                                                        'D' => '♦',
-                                                        'C' => '♣',
-                                                        'S' => '♠',
-                                                    ][$suit] ?? '';
-                                            @endphp
-
-                                            <div class="text-center">
-                                                <div class="text-lg font-bold {{ $color }}">{{ $value }}
-                                                </div>
-                                                <div class="text-2xl {{ $color }}">{{ $suitSymbol }}</div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @elseif($cardsDealt)
-                                <div  x-if="selectedCards[{{ $player->id }}] && selectedCards[{{ $player->id }}].length == 0 " class="flex justify-center space-x-2 mb-4">
-                                    @for ($i = 0; $i < 2; $i++)
-                                        <div
-                                            class="w-16 h-24 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg shadow-md flex items-center justify-center">
-                                            <svg class="h-8 w-8 text-white opacity-50"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </div>
-                                    @endfor
-                                </div>
-                            @else
-                                <div  x-if="selectedCards[{{ $player->id }}] && selectedCards[{{ $player->id }}].length > 0" class="flex justify-center items-center h-24 text-gray-400">
-                                    Waiting for cards to be dealt...
-                                </div>
-                            @endif --}}
                         </div>
                     </div>
                 @endforeach
@@ -427,19 +415,6 @@
 
             <!-- Game Controls -->
             <div class="flex justify-between items-center">
-                {{-- @if ($cardsDealt)
-                    <button wire:click="showResults"
-                        class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                            fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        Show Results
-                    </button>
-                @endif --}}
-
                 <button wire:click="leaveGame"
                     class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Leave Game
@@ -454,24 +429,23 @@
             <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
                 <h3 class="text-lg font-medium text-gray-900">Place Your Bet</h3>
                 <div class="text-sm text-gray-500" x-text="'Time remaining: ' + countdown + 's'"></div>
-                {{-- <p class="text-sm text-gray-500">Time remaining: {{ $countdown ?? '10' }}s</p> --}}
             </div>
 
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="text-sm text-gray-500">Minimum bet: {{ number_format($minBet) }} Kyats</div>
+                    <div class="text-sm text-gray-500">Minimum bet: {{ number_format($minBet) }} PT</div>
                     <div class="text-sm font-medium text-gray-900">Your balance:
-                        {{ number_format(auth()->user()->wallet->amount ?? 0) }} Kyats</div>
+                        {{ number_format(auth()->user()->wallet->amount ?? 0) }} PT</div>
                 </div>
 
                 <div class="mb-4">
                     <label for="bet-amount" class="block text-sm font-medium text-gray-700 mb-1">Bet Amount</label>
                     <div class="mt-1 relative rounded-md shadow-sm">
                         <input type="text" wire:model="betAmount" id="bet-amount"
-                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
+                            class="focus:ring-indigo-500 focus:border-indigo-500 p-2 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
                             placeholder="{{ $minBet }}">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-gray-500 sm:text-sm">Kyats</span>
+                            <span class="text-gray-500 sm:text-sm">PT</span>
                         </div>
                     </div>
                     @error('betAmount')
@@ -483,8 +457,8 @@
                     <div class="flex space-x-2">
                         @foreach ([1000, 5000, 10000, 50000] as $quickAmount)
                             <button type="button" wire:click="setBetAmount({{ $quickAmount }})"
-                                class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-indigo-500">
-                                {{ number_format($quickAmount) }}
+                                class="inline-flex items-center justify-center w-14 h-14 cursor-pointer rounded-full bg-gradient-to-r from-yellow-400 to-yellow-500 shadow-md hover:shadow-lg transform hover:scale-105 transition-all border-2 border-yellow-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400">
+                                <span class="text-xs font-bold text-yellow-900">{{ number_format($quickAmount) }}</span>
                             </button>
                         @endforeach
                     </div>

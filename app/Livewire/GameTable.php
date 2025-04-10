@@ -13,6 +13,7 @@ use App\Events\CountdownUpdated;
 use App\Events\NewRoundStarted;
 use App\Models\Bet;
 use Illuminate\Support\Facades\Log;
+use Livewire\Attributes\Computed;
 
 class GameTable extends Component
 {
@@ -274,11 +275,16 @@ class GameTable extends Component
 
         $player =  Player::where('game_id', $this->game->id)
             ->where('user_id', Auth::id())
+            ->where('status','playing')
             ->first();
 
-        $player->status = 'left';
-        $player->game_id = null;
-        $player->update();
+        if (!$player) {
+            
+            $player->status = 'left';
+            $player->game_id = null;
+            $player->update();
+
+        }
 
         session()->forget('game_id');
 
@@ -417,6 +423,8 @@ class GameTable extends Component
                 // Add the winnings to the user's wallet
                 $user->wallet->increment('amount', $winAmount);
 
+                $hostPlayerRound->decrement('win_amount',$winAmount-$winner->amount);
+
                 // Record the win in the player round
                 $winner->update([
                     'status' => 'won',
@@ -463,12 +471,14 @@ class GameTable extends Component
             // Mark all other players as losers
             foreach ($this->playerCards as $playerCard) {
                 if ($playerCard->player_id != $hostPlayer->id) {
-                    if($hasPair){
-                        $playerCard->player->user->wallet->decrement('amount', $playerCard->amount);
+                    $hostPlayerRound->increment('win_amount', $playerCard->amount);
 
+                    if($hasPair){
+                        $hostPlayerRound->increment('win_amount', $playerCard->amount); //double win
+                        $playerCard->player->user->wallet->decrement('amount', $playerCard->amount);  //double lost
                         $playerCard->update([
-                            'status' => 'lose',
-                            'amount' => $playerCard * 2
+                            'status' => 'lost',
+                            'amount' => $playerCard->amount * 2
                         ]);
                     }else{
                         $playerCard->update([
@@ -487,6 +497,61 @@ class GameTable extends Component
 
         // Start a new round after a short delay
         $this->startNewRound();
+    }
+
+    #[Computed()]
+    public function totalProfit()
+    {
+        $hostPlayer = Player::where('game_id',$this->game->id)->whereHas('user', function ($query) {
+            return $query->where('is_host', true);
+         })->first();
+
+        $totalProfit = PlayerRound::where('player_id',$hostPlayer->id)
+            ->where('status', 'won')
+            ->sum('win_amount');
+
+            return $totalProfit;
+    }
+
+    public function endGame()
+    {
+        if (!$this->isHost) {
+            return;
+        }
+
+        // Calculate commission (1% of total profit)
+        $commissionAmount = $this->totalProfit * 0.01;
+        $hostPlayer = Player::where('game_id', $this->game->id)
+            ->whereHas('user', fn($q) => $q->where('is_host', true))
+            ->first();
+
+        if ($hostPlayer) {
+            // Add commission to host's wallet
+            $hostPlayer->user->wallet->increment('amount', $commissionAmount);
+
+            // Record commission transaction
+            $hostPlayer->user->transitions()->create([
+                'amount' => $commissionAmount,
+                'type' => 'commission',
+                // 'status' => 'completed',
+                // 'description' => 'Game commission from room #' . $this->game->id
+            ]);
+        }
+
+        $player = Player::where('game_id', $this->game->id)->where('status','playing')->get();
+        foreach ($player as $player) {
+            $player->game_id = null;
+            $player->update();
+        }
+
+        // Update game status
+        $this->game->update(['status' => 'completed']);
+
+        // Show success message
+        session()->flash('message', 'Game ended successfully. Commission of ' . number_format($commissionAmount) . ' Kyats has been added to host wallet.');
+
+        // Redirect to lobby
+        return redirect()->route('game.lobby');
     }
 
     public function startNewRound()

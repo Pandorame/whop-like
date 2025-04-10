@@ -64,9 +64,9 @@
                         <li class="px-6 py-4">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 {{ $transaction->type ===  'cash_in' ? 'bg-green-100' : 'bg-red-100' }} p-2 rounded-full">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 {{ $transaction->type ===  'cash_in' ? 'text-green-600' : 'text-red-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            @if($transaction->type ===  'cash_in')
+                                    <div class="flex-shrink-0 {{ $transaction->type ===  'cash_in' || $transaction->type === 'commission' ? 'bg-green-100' : 'bg-red-100' }} p-2 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 {{ $transaction->type ===  'cash_in' || $transaction->type === 'commission' ? 'text-green-600' : 'text-red-600' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            @if($transaction->type ===  'cash_in' || $transaction->type === 'commission')
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                             @else
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
@@ -79,8 +79,8 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-sm font-medium {{ $transaction->type ===  'cash_in' ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $transaction->type ===  'cash_in' ? '+' : '-' }} {{ number_format($transaction->amount) }} Kyats
+                                    <p class="text-sm font-medium {{ $transaction->type ===  'cash_in' || $transaction->type === 'commission' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ $transaction->type ===  'cash_in' || $transaction->type === 'commission' ? '+' : '-' }} {{ number_format($transaction->amount) }} Kyats
                                     </p>
                                     <p class="text-xs text-slate-500">{{ $transaction->status }}</p>
                                 </div>

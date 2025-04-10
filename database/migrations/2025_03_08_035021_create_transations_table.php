@@ -16,6 +16,7 @@ return new class extends Migration
             $table->morphs('transationable'); // This will create 'transitionable_id' and 'transitionable_type'
             $table->decimal('amount',15,2);
             $table->string('type');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
