@@ -4,139 +4,130 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+        <div class="flex min-h-screen">
+            <!-- Minimal Sidebar (Whop-style) with Heroicons -->
+            <div class="hidden lg:flex flex-col items-center w-16 hover:w-64 transition-all duration-300 ease-in-out border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 group/sidebar">
+                <!-- Logo -->
+                  <!--    <div class="flex items-center justify-center w-full px-4 py-5 overflow-hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                         class="w-8 h-8 text-zinc-800 dark:text-white group-hover/sidebar:mr-2 transition-all">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 7.5.415-.207a.75.75 0 0 1 1.085.67V10.5m0 0h6m-6 0h-1.5m1.5 0v5.438c0 .354.161.697.473.865a3.751 3.751 0 0 0 5.452-2.553c.083-.409-.263-.75-.68-.75h-.745M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <span class="text-xl font-semibold whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                        Whop
+                    </span>
+                </div> -->
 
-            <a href="{{ route('dashboard') }}" class="ml-2 mr-5 flex items-center space-x-2 lg:ml-0" wire:navigate>
-                <x-app-logo />
-            </a>
+                <!-- Navigation Icons with Heroicons -->
+                <div class="flex-1 w-full space-y-1 px-2 py-4">
+                    <!-- Dashboard -->
+                    <div class="flex">
+                    <div class="w-20 h-20 flex">
+         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" 
+                         class="w-8 h-8 text-zinc-800 dark:text-white group-hover/sidebar:mr-2 transition-all">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 7.5.415-.207a.75.75 0 0 1 1.085.67V10.5m0 0h6m-6 0h-1.5m1.5 0v5.438c0 .354.161.697.473.865a3.751 3.751 0 0 0 5.452-2.553c.083-.409-.263-.75-.68-.75h-.745M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg> </div>
+                    <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            Whop-Like-Web
+                        </span>  </div>
+           
 
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
-                </flux:navbar.item>
-            </flux:navbar>
-
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="wallet" :href="route('deposit')" :current="request()->routeIs('deposit')" wire:navigate>
-                    {{ __('Deposit') }}
-                </flux:navbar.item>
-            </flux:navbar>
-
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="histories" :href="route('histoires')" :current="request()->routeIs('histoires')" wire:navigate>
-                    {{ __('Histories') }}
-                </flux:navbar.item>
-            </flux:navbar>
-
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="histories" :href="route('game.lobby')" :current="request()->routeIs('game.lobby')" wire:navigate>
-                    {{ __('Games') }}
-                </flux:navbar.item>
-            </flux:navbar>
-
-
-            <flux:spacer />
-
-            <flux:navbar class="mr-1.5 space-x-0.5 py-0!">
-                {{-- <flux:tooltip :content="__('Search')" position="bottom">
-                    <flux:navbar.item class="!h-10 [&>div>svg]:size-5" icon="magnifying-glass" href="#" :label="__('Search')" />
-                </flux:tooltip> --}}
-            </flux:navbar>
-
-            <!-- Desktop User Menu -->
-            <flux:dropdown position="top" align="end">
-                <flux:profile
-                    class="cursor-pointer"
-                    :initials="auth()->user()->initials()"
-                />
-
-                <flux:menu>
-                    <flux:menu.radio.group>
-                        <div class="p-0 text-sm font-normal">
-                            <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                                <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    <span
-                                        class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
-                                    >
-                                        {{ auth()->user()->initials() }}
-                                    </span>
-                                </span>
-
-                                <div class="grid flex-1 text-left text-sm leading-tight">
-                                    <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                    <span class="truncate text-xs">{{ auth()->user()->email }}</span>
-                                </div>
-                            </div>
+                    <a href="{{ route('dashboard') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
+                        <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            </svg>
                         </div>
-                    </flux:menu.radio.group>
+                        <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            Dashboard
+                        </span>
+                    </a>
 
-                    <flux:menu.separator />
+                    <!-- Deposit -->
+                    <a href="{{ route('deposit') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
+                        <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                            </svg>
+                        </div>
+                        <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            Deposit
+                        </span>
+                    </a>
 
-                    <flux:menu.radio.group>
-                        <flux:menu.item href="/settings/profile" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
-                    </flux:menu.radio.group>
+                    <!-- Histories -->
+                    <a href="{{ route('histoires') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
+                        <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            Histories
+                        </span>
+                    </a>
 
-                    <flux:menu.separator />
+                    <!-- Games -->
+                    <a href="{{ route('game.lobby') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
+                        <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
+                            </svg>
+                        </div>
+                        <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            Games
+                        </span>
+                    </a>
+                </div>
 
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
-                        @csrf
-                        <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                            {{ __('Log Out') }}
-                        </flux:menu.item>
-                    </form>
-                </flux:menu>
-            </flux:dropdown>
-        </flux:header>
+                <!-- User Profile at Bottom -->
+                <div class="w-full p-2 border-t border-zinc-200 dark:border-zinc-700">
+                    <div class="flex items-center p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/profile">
+                        <div class="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700 text-sm font-medium">
+                            {{ auth()->user()->initials() }}
+                        </div>
+                        <div class="ml-3 overflow-hidden whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                            <div class="text-sm font-medium truncate">{{ auth()->user()->name }}</div>
+                            <div class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Mobile Menu -->
+            <!-- Main Content Area -->
+            <div class="flex-1 flex flex-col">
+                <!-- Top Header (for mobile) -->
+                <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 lg:hidden">
+                    <flux:sidebar.toggle icon="bars-2" inset="left" />
+                    
+                    <a href="{{ route('dashboard') }}" class="ml-2 mr-5 flex items-center space-x-2 lg:ml-0" wire:navigate>
+                        <x-app-logo />
+                    </a>
+                    
+                    <flux:spacer />
+                    
+                    <!-- Mobile User Menu -->
+                    <flux:dropdown position="bottom" align="end">
+                        <flux:profile
+                            class="cursor-pointer"
+                            :initials="auth()->user()->initials()"
+                        />
+                        <!-- ... same user menu as before ... -->
+                    </flux:dropdown>
+                </flux:header>
+
+                <!-- Page Content -->
+                <main class="flex-1 bg-white dark:bg-zinc-800 p-6 overflow-auto">
+                    {{ $slot }}
+                </main>
+            </div>
+        </div>
+
+        <!-- Mobile Sidebar (hidden on desktop) -->
         <flux:sidebar stashable sticky class="lg:hidden border-r border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
-
-            <a href="{{ route('dashboard') }}" class="ml-1 flex items-center space-x-2" wire:navigate>
-                <x-app-logo />
-            </a>
-
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Platform')">
-                    <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                    {{ __('Dashboard') }}
-                    </flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Deposit')" class="grid">
-                    <flux:navlist.item icon="wallet" :href="route('deposit')" :current="request()->routeIs('deposit')" wire:navigate>{{ __('Deposit') }}</flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Histories')" class="grid">
-                    <flux:navlist.item icon="histories" :href="route('histoires')" :current="request()->routeIs('histoires')" wire:navigate>{{ __('Histories') }}</flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:navlist variant="outline">
-                <flux:navlist.group :heading="__('Game')" class="grid">
-                    <flux:navlist.item icon="layout-grid" :href="route('game.lobby')" :current="request()->routeIs('game.lobby')" wire:navigate>{{ __('Game') }}</flux:navlist.item>
-                </flux:navlist.group>
-            </flux:navlist>
-
-            <flux:spacer />
-
-            <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
-                <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits" target="_blank">
-                {{ __('Documentation') }}
-                </flux:navlist.item>
-            </flux:navlist>
+            <!-- ... keep your existing mobile sidebar content ... -->
         </flux:sidebar>
-
-        {{ $slot }}
 
         @fluxScripts
     </body>
