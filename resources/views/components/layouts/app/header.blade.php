@@ -32,14 +32,14 @@
                         </span>  </div>
            
 
-                    <a href="{{ route('dashboard') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
+                    <a href="{{ route('campaign') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
                         <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
                             </svg>
                         </div>
                         <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
-                            Dashboard
+                            Discover
                         </span>
                     </a>
 
@@ -81,19 +81,60 @@
                     </a>
                 </div>
 
-                <!-- User Profile at Bottom -->
-                <div class="w-full p-2 border-t border-zinc-200 dark:border-zinc-700">
-                    <div class="flex items-center p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/profile">
-                        <div class="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700 text-sm font-medium">
-                            {{ auth()->user()->initials() }}
-                        </div>
-                        <div class="ml-3 overflow-hidden whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
-                            <div class="text-sm font-medium truncate">{{ auth()->user()->name }}</div>
-                            <div class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</div>
-                        </div>
-                    </div>
-                </div>
+                <!-- User Profile Dropdown at Bottom -->
+<div class="w-full p-2 border-t border-zinc-200 dark:border-zinc-700">
+    <div x-data="{ open: false }" class="relative">
+        <!-- Profile Button -->
+        <button @click="open = !open" class="flex items-center w-full p-2 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/profile">
+            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-zinc-200 dark:bg-zinc-700 text-sm font-medium">
+                {{ auth()->user()->initials() }}
             </div>
+            <div class="ml-3 overflow-hidden whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
+                <div class="text-sm font-medium truncate">{{ auth()->user()->name }}</div>
+                <div class="text-xs text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</div>
+            </div>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div x-show="open" 
+             @click.outside="open = false"
+             x-transition:enter="transition ease-out duration-100"
+             x-transition:enter-start="transform opacity-0 scale-95"
+             x-transition:enter-end="transform opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-75"
+             x-transition:leave-start="transform opacity-100 scale-100"
+             x-transition:leave-end="transform opacity-0 scale-95"
+             class="absolute left-0 bottom-full mb-2 w-48 origin-bottom-left rounded-md bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+            <div class="py-1">
+                <!-- Profile Link -->
+                <a href="/settings/profile" wire:navigate class="block px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                        </svg>
+                        Profile Settings
+                    </div>
+                </a>
+                
+                <!-- Divider -->
+                <div class="border-t border-zinc-200 dark:border-zinc-700 my-1"></div>
+                
+                <!-- Logout -->
+                <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    @csrf
+                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                        </svg>
+                        Log Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
 
             <!-- Main Content Area -->
             <div class="flex-1 flex flex-col">

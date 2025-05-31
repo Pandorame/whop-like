@@ -39,6 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/game/table', GameTable::class)->name('game.table');
     Route::get('/game/betting', BettingPanel::class)->name('game.betting');
     Route::get('/all/transactions', \App\Livewire\AllTransactions::class)->name('all.transactions');
+
+    Route::get('/campaigns', \App\Livewire\CampaignList::class)->name('campaigns.index');
+    Route::get('/campaigns/{campaign}', \App\Livewire\CampaignDetail::class)->name('campaigns.show');
 });
 
 require __DIR__.'/auth.php';
