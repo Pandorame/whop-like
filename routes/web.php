@@ -12,6 +12,8 @@ use App\Livewire\GameLobby;
 use App\Livewire\GameTable;
 use App\Livewire\BettingPanel;
 use App\Livewire\GameHistory;
+use App\Livewire\CampaignList;
+use App\Livewire\CampaignDetail;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,8 +42,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/game/betting', BettingPanel::class)->name('game.betting');
     Route::get('/all/transactions', \App\Livewire\AllTransactions::class)->name('all.transactions');
 
-    Route::get('/campaigns', \App\Livewire\CampaignList::class)->name('campaigns.index');
-    Route::get('/campaigns/{campaign}', \App\Livewire\CampaignDetail::class)->name('campaigns.show');
+    Route::get('/campaigns', CampaignList::class)->name('campaigns.index');
+    Route::get('/campaigns/{campaign}', CampaignDetail::class)->name('campaigns.show');
 });
 
 require __DIR__.'/auth.php';

@@ -18,4 +18,33 @@ class UserCampaign extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+   // app/Models/UserCampaign.php
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::saved(function ($userCampaign) {
+        // Recalculate campaign's paid amount whenever a submission changes
+        $userCampaign->campaign->refresh()->updatePaidAmount();
+    });
+
+    static::deleted(function ($userCampaign) {
+        // Recalculate if a submission is deleted
+        $userCampaign->campaign->refresh()->updatePaidAmount();
+    });
+}
+
+// Add this new method to handle status changes
+public function markAsPaid()
+{
+    $this->update([
+        'status' => 'paid',
+        'paid_at' => now(),
+    ]);
+    
+    $this->campaign->refresh()->updatePaidAmount();
+}
+
 }

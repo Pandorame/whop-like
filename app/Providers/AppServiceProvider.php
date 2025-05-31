@@ -8,6 +8,8 @@ use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
+use App\Models\UserCampaign;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Model::unguard();
+
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_PROFILE_AFTER, 

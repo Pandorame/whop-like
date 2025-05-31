@@ -13,6 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TagsInput;
+
 class CampaignResource extends Resource
 {
     protected static ?string $model = Campaign::class;
@@ -29,13 +35,6 @@ class CampaignResource extends Resource
                     ->numeric()
                     ->required()
                     ->prefix('$'),
-                TextInput::make('payout_structure')->required(),
-                Select::make('content_type')
-                    ->options([
-                        'UGC' => 'User Generated Content',
-                        'Professional' => 'Professional Content',
-                    ])
-                    ->required(),
                 TagsInput::make('platforms')
                     ->suggestions([
                         'youtube', 'instagram', 'tiktok', 'twitter'
@@ -44,7 +43,38 @@ class CampaignResource extends Resource
                 Select::make('advertiser_id')
                     ->relationship('advertiser', 'name')
                     ->required(),
-            ]);
+
+                    Select::make('payout_structure_type')
+                ->label('Payout Type')
+                ->options([
+                    'per_view' => 'Per View',
+                    'percentage' => 'Percentage of Budget',
+                    'fixed' => 'Fixed Amount',
+                ])
+                ->reactive()
+                ->required(),
+                
+            TextInput::make('payout_amount')
+                ->numeric()
+                ->label('Payout Amount')
+                ->required()
+                ->prefix('$'),
+                
+            TextInput::make('payout_threshold')
+                ->numeric()
+                ->label('Views Threshold (for per view)')
+                ->requiredIf('payout_structure_type', 'per_view')
+                ->hidden(fn ($get) => $get('payout_structure_type') !== 'per_view'),
+                
+            // This will display the calculated structure
+            TextInput::make('payout_structure_display')
+                ->label('Payout Structure')
+                ->disabled()
+                ->dehydrated(false)
+                ->hidden(fn ($get) => !in_array($get('payout_structure_type'), ['per_view', 'percentage', 'fixed']))
+                ->formatStateUsing(function ($record) {
+                    return $record?->payout_structure_display ?? '';
+                }),      ]);
     }
 
     public static function table(Table $table): Table
