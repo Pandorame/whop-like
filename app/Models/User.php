@@ -65,8 +65,28 @@ class User extends Authenticatable
     }
 
     public function wallet()
-    {
-        return $this->hasOne(Wallet::class);
+{
+    return $this->hasOne(Wallet::class);
+}
+
+public function deposit($amount, $description = '')
+{
+    if (!$this->wallet) {
+        $this->wallet()->create(['balance' => 0]);
     }
+
+    $this->wallet->balance += $amount;
+    $this->wallet->save();
+
+    // Record transaction
+    $this->wallet->transactions()->create([
+        'amount' => $amount,
+        'type' => 'deposit',
+        'description' => $description,
+        'balance_after' => $this->wallet->balance
+    ]);
+
+    return $this->wallet;
+}
 
 }

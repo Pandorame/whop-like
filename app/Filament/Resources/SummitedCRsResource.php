@@ -184,10 +184,22 @@ class SummitedCRsResource extends Resource
                     ->icon('heroicon-o-banknotes')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->action(function (UserCampaign $record) {
+                    ->modalHeading('Mark Submission as Paid')
+                    ->modalDescription(fn ($record) => "Are you sure you want to mark this submission as paid and add \${$record->earnings} to {$record->user->name}'s wallet?")
+                    ->form([
+                        TextInput::make('payment_reference')
+                            ->label('Payment Reference/Notes')
+                            ->required(),
+                    ])
+                    ->action(function (array $data, UserCampaign $record) {
                         $record->markAsPaid();
+                        
+                        // Record payment reference
+                        $record->update(['payment_reference' => $data['payment_reference']]);
+                        
                         Notification::make()
-                            ->title('Marked as Paid')
+                            ->title('Payment Processed')
+                            ->body("Added \${$record->earnings} to {$record->user->name}'s wallet")
                             ->success()
                             ->send();
                     })
@@ -195,6 +207,7 @@ class SummitedCRsResource extends Resource
                 
                 DeleteAction::make(),
             ])
+            
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

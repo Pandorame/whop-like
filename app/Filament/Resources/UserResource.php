@@ -78,13 +78,6 @@ class UserResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
@@ -93,4 +86,11 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+
+    public static function getRelations(): array
+{
+    return [
+        RelationManagers\WalletRelationManager::class,
+    ];
+}
 }

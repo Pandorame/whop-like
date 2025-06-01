@@ -12,11 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         // New migration file
-Schema::table('campaigns', function (Blueprint $table) {
-    $table->string('payout_structure_type')->default('per_view'); // per_view, percentage, fixed
-    $table->decimal('payout_amount', 10, 2)->nullable(); // Amount per view/percentage
-    $table->integer('payout_threshold')->nullable(); // Views required
+Schema::table('wallets', function (Blueprint $table) {
+    $table->decimal('balance', 12, 2)->default(0);
+
 });
+
+Schema::table('transactions', function (Blueprint $table) {
+    $table->decimal('balance_after', 12, 2);
+});
+
     }
 
     /**

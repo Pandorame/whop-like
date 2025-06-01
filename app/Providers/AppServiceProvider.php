@@ -9,7 +9,7 @@ use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use App\Models\UserCampaign;
-
+use App\Observers\UserCampaignObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,8 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Model::unguard();
+        UserCampaign::observe(UserCampaignObserver::class);
 
+        Model::unguard();
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_PROFILE_AFTER, 

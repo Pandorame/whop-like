@@ -15,8 +15,8 @@
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Deposit History</h3>
-                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all deposit transactions</p>
+                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Earning History</h3>
+                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all Earning transactions</p>
                                 </div>
                                 <div class="ml-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-slate-600" viewBox="0 0 20 20" fill="currentColor">
@@ -84,8 +84,8 @@
                                     </svg>
                                 </div>
                                 <div class="ml-4">
-                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Bet History</h3>
-                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all betting transactions</p>
+                                    <h3 class="text-lg font-medium text-gray-900 group-hover:text-slate-700">Task History</h3>
+                                    <p class="text-sm text-gray-500 group-hover:text-slate-600">View all Tasks transactions</p>
                                 </div>
                                 <div class="ml-auto">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-slate-600" viewBox="0 0 20 20" fill="currentColor">

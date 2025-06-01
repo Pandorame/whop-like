@@ -1,6 +1,6 @@
 <div>
     @php use App\Helpers\Enums\TransitionType; @endphp
-    <div class="max-w-md mx-auto">
+    <div class="w-full">
         <!-- Main Wallet Card -->
         <div class="bg-gradient-to-r from-slate-700 to-slate-900 rounded-xl shadow-lg overflow-hidden">
             <!-- Card Header -->
@@ -43,7 +43,7 @@
                         Withdraw
                     </a>
 
-                    <button  wire:click="toggleTransactions" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-slate-500">
+                    <button wire:click="toggleTransactions" class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-slate-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
@@ -53,15 +53,22 @@
             </div>
         </div>
 
-        <!-- Recent Transactions (Optional) -->
+        <!-- Recent Transactions -->
         @if($showTransactions && count($transactions) > 0)
-            <div class="mt-4 bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="mt-6 bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="px-6 py-4 bg-slate-50 border-b border-slate-100">
-                    <h3 class="text-md font-medium text-slate-700">Recent Transactions</h3>
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-md font-medium text-slate-700">Recent Transactions</h3>
+                        <button wire:click="toggleTransactions" class="text-slate-500 hover:text-slate-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <ul class="divide-y divide-slate-100">
                     @foreach($transactions as $transaction)
-                        <li class="px-6 py-4">
+                        <li class="px-6 py-4 hover:bg-slate-50 transition-colors">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 {{ $transaction->type ===  'cash_in' || $transaction->type === 'commission' ? 'bg-green-100' : 'bg-red-100' }} p-2 rounded-full">
@@ -88,8 +95,12 @@
                         </li>
                     @endforeach
                 </ul>
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 text-center">
+                    <a href="#" wire:click.prevent="$emit('openModal', 'view-all-transactions')" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View complete transaction history →
+                    </a>
+                </div>
             </div>
         @endif
-
     </div>
 </div>

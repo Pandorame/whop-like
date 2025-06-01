@@ -2,7 +2,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
-                <h2 class="text-2xl font-bold mb-6 text-gray-800">Deposit History</h2>
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Earning History</h2>
                 
                 <!-- Filters Section -->
                 <div class="hidden lg:block  mb-6 bg-slate-50 p-4 rounded-lg">
@@ -56,7 +56,7 @@
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Total Deposits</dt>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Total Earning</dt>
                                         <dd class="flex items-baseline">
                                             <div class="text-2xl font-semibold text-gray-900">{{ number_format($totalDeposits) }} Kyats</div>
                                         </dd>
@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Completed Deposits</dt>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Completed Earning</dt>
                                         <dd class="flex items-baseline">
                                             <div class="text-2xl font-semibold text-gray-900">{{ number_format($completedDeposits) }} Kyats</div>
                                         </dd>
@@ -96,7 +96,7 @@
                                 </div>
                                 <div class="ml-5 w-0 flex-1">
                                     <dl>
-                                        <dt class="text-sm font-medium text-gray-500 truncate">Pending Deposits</dt>
+                                        <dt class="text-sm font-medium text-gray-500 truncate">Pending Earning</dt>
                                         <dd class="flex items-baseline">
                                             <div class="text-2xl font-semibold text-gray-900">{{ number_format($pendingDeposits) }} Kyats</div>
                                         </dd>
@@ -131,7 +131,7 @@
                             <div class="p-5">
                                 <!-- Amount (Highlighted) -->
                                 <div class="mb-4 text-center">
-                                    <p class="text-xs text-gray-500 mb-1">DEPOSIT AMOUNT</p>
+                                    <p class="text-xs text-gray-500 mb-1">Earning AMOUNT</p>
                                     <p class="text-2xl font-bold text-gray-800">{{ number_format($deposit->amount) }} <span class="text-sm font-normal">Kyats</span></p>
                                 </div>
                                 
