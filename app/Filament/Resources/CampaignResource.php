@@ -35,6 +35,13 @@ class CampaignResource extends Resource
                     ->numeric()
                     ->required()
                     ->prefix('$'),
+
+                    Select::make('content_type')
+                    ->options([
+                        'UGC' => 'User Generated Content',
+                        'Professional' => 'Professional Content',
+                    ])
+                    ->required(),
                 TagsInput::make('platforms')
                     ->suggestions([
                         'youtube', 'instagram', 'tiktok', 'twitter'
@@ -44,37 +51,56 @@ class CampaignResource extends Resource
                     ->relationship('advertiser', 'name')
                     ->required(),
 
-                    Select::make('payout_structure_type')
-                ->label('Payout Type')
-                ->options([
-                    'per_view' => 'Per View',
-                    'percentage' => 'Percentage of Budget',
-                    'fixed' => 'Fixed Amount',
-                ])
-                ->reactive()
-                ->required(),
-                
-            TextInput::make('payout_amount')
-                ->numeric()
-                ->label('Payout Amount')
-                ->required()
-                ->prefix('$'),
-                
-            TextInput::make('payout_threshold')
-                ->numeric()
-                ->label('Views Threshold (for per view)')
-                ->requiredIf('payout_structure_type', 'per_view')
-                ->hidden(fn ($get) => $get('payout_structure_type') !== 'per_view'),
-                
-            // This will display the calculated structure
-            TextInput::make('payout_structure_display')
-                ->label('Payout Structure')
-                ->disabled()
-                ->dehydrated(false)
-                ->hidden(fn ($get) => !in_array($get('payout_structure_type'), ['per_view', 'percentage', 'fixed']))
-                ->formatStateUsing(function ($record) {
-                    return $record?->payout_structure_display ?? '';
-                }),      ]);
+   // Payout Structure Section
+   Select::make('payout_structure_type')
+   ->label('Payout Type')
+   ->options([
+       'per_view' => 'Per View',
+       'percentage' => 'Percentage of Budget',
+       'fixed' => 'Fixed Amount',
+   ])
+   ->reactive()
+   ->required()
+   ->afterStateUpdated(function ($state, $set) {
+       // Reset dependent fields when type changes
+       $set('payout_amount', null);
+       $set('payout_threshold', null);
+   }),
+   
+TextInput::make('payout_amount')
+   ->numeric()
+   ->label('Payout Amount')
+   ->required()
+   ->prefix('$')
+   ->minValue(0.01),
+   
+TextInput::make('payout_threshold')
+   ->numeric()
+   ->label('Views Threshold (for per view)')
+   ->requiredIf('payout_structure_type', 'per_view')
+   ->hidden(fn ($get) => $get('payout_structure_type') !== 'per_view')
+   ->minValue(1),
+   
+TextInput::make('payout_structure_display')
+   ->label('Payout Structure Summary')
+   ->disabled()
+   ->dehydrated(false)
+   ->formatStateUsing(function ($get) {
+       $type = $get('payout_structure_type');
+       $amount = $get('payout_amount');
+       $threshold = $get('payout_threshold');
+       
+       if (!$type || !$amount) return '';
+       
+       return match($type) {
+           'per_view' => "{$threshold} views / \${$amount}",
+           'percentage' => "{$amount}% of budget",
+           'fixed' => "Fixed \${$amount} per submission",
+           default => ''
+       };
+   }),
+]);
+
     }
 
     public static function table(Table $table): Table

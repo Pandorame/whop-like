@@ -55,7 +55,7 @@
                         </span>
                     </a>
 
-                    <!-- Histories -->
+                    <!-- Histories 
                     <a href="{{ route('histoires') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
                         <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -67,7 +67,7 @@
                         </span>
                     </a>
 
-                    <!-- Games -->
+                     Games
                     <a href="{{ route('game.lobby') }}" class="flex items-center w-full p-3 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-800 group/navitem" wire:navigate>
                         <div class="w-6 h-6 flex items-center justify-center text-zinc-600 dark:text-zinc-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
@@ -78,7 +78,7 @@
                         <span class="ml-4 whitespace-nowrap opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-200">
                             Games
                         </span>
-                    </a>
+                    </a>-->
                 </div>
 
                 <!-- User Profile Dropdown at Bottom -->

@@ -75,7 +75,7 @@ public function deposit($amount, $description = '')
         $this->wallet()->create(['balance' => 0]);
     }
 
-    $this->wallet->balance += $amount;
+    $this->wallet->amount += $amount;
     $this->wallet->save();
 
     // Record transaction
